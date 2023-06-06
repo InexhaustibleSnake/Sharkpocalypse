@@ -3,6 +3,7 @@
 #include "Enemy/BaseEnemy.h"
 #include "GameFramework/FloatingPawnMovement.h"
 #include "Components/CapsuleComponent.h"
+#include "Enemy/Components/EnemyHealthComponent.h"
 
 ABaseEnemy::ABaseEnemy()
 {
@@ -18,6 +19,7 @@ ABaseEnemy::ABaseEnemy()
 	BodyCollision->SetupAttachment(SkeletalMesh);
 
 	FloatingPawnMovement = CreateDefaultSubobject<UFloatingPawnMovement>("FloatingPawnMovement");
+	EnemyHealthComponent = CreateDefaultSubobject<UEnemyHealthComponent>("EnemyHealthComponent");
 }
 
 void ABaseEnemy::BeginPlay()

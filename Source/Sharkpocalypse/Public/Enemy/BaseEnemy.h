@@ -9,6 +9,7 @@
 class USkeletalMeshComponent;
 class UFloatingPawnMovement;
 class UCapsuleComponent;
+class UEnemyHealthComponent;
 
 UCLASS()
 class SHARKPOCALYPSE_API ABaseEnemy : public APawn
@@ -32,5 +33,8 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Components")
 	UCapsuleComponent* BodyCollision;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Components")
+	UEnemyHealthComponent* EnemyHealthComponent;
 
 };
