@@ -7,16 +7,15 @@
 ABaseEnemy::ABaseEnemy()
 {
 	PrimaryActorTick.bCanEverTick = false;
-	
-	//CapsuleComponent = CreateDefaultSubobject<UCapsuleComponent>("CapsuleComponent");
-	//FRotator CapsuleRotation(0.0f, 0.0f, 0.0f);
-	//CapsuleComponent->SetRelativeRotation(CapsuleRotation);
-	//SetRootComponent(CapsuleComponent);
+
+	RootCollision = CreateDefaultSubobject<UCapsuleComponent>("RootCollision");
+	SetRootComponent(RootCollision);
 
 	SkeletalMesh = CreateDefaultSubobject<USkeletalMeshComponent>("SkeletalMesh");
-	SetRootComponent(SkeletalMesh);
-	FRotator RootRotation(0.0f, -90.0f, 90.0f);
-	SkeletalMesh->SetRelativeRotation(RootRotation);
+	SkeletalMesh->SetupAttachment(GetRootComponent());
+
+	BodyCollision = CreateDefaultSubobject<UCapsuleComponent>("BodyCollision");
+	BodyCollision->SetupAttachment(SkeletalMesh);
 
 	FloatingPawnMovement = CreateDefaultSubobject<UFloatingPawnMovement>("FloatingPawnMovement");
 }

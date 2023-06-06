@@ -28,6 +28,9 @@ protected:
 	UFloatingPawnMovement* FloatingPawnMovement;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Components")
-	UCapsuleComponent* CapsuleComponent;
+	UCapsuleComponent* RootCollision;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Components")
+	UCapsuleComponent* BodyCollision;
 
 };

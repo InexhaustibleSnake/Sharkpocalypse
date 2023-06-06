@@ -17,7 +17,7 @@ void AShotgunWeapon::MakeShot()
 		}
 
 		MakeTrace(HitResult, TraceStart, TraceEnd);
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("123")));
+
 		if (HitResult.bBlockingHit)
 		{
 			MakeDamage(HitResult);

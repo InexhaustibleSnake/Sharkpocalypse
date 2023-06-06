@@ -11,7 +11,7 @@ ABaseMainCharacter::ABaseMainCharacter()
 	MainCamera = CreateDefaultSubobject<UCameraComponent>("MainCamera");
 	MainCamera->SetupAttachment(GetRootComponent());
 	MainCamera->bUsePawnControlRotation = true;
-	
+
 	FAttachmentTransformRules AttachmentTransformRules(EAttachmentRule::SnapToTarget, false);
 	GetMesh()->AttachToComponent(MainCamera, AttachmentTransformRules);
 
