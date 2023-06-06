@@ -6,6 +6,18 @@
 #include "GameFramework/Actor.h"
 #include "BaseWeapon.generated.h"
 
+USTRUCT(BlueprintType)
+struct FAmmoData
+{
+	GENERATED_USTRUCT_BODY()
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
+	int32 Bullets;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
+	bool InfiniteAmmo;
+};
+
 UCLASS()
 class SHARKPOCALYPSE_API ABaseWeapon : public AActor
 {
@@ -19,8 +31,19 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
-	void MakeTrace();
-	FVector GetMuzzleWorldLocation();
+	bool GetTraceData(FVector& TraceStart, FVector& TraceEnd) const;
+
+	void MakeTrace(FHitResult& HitResult, const FVector& TraceStart, const FVector& TraceEnd);
+
+	virtual void MakeShot();
+
+	void MakeDamage(const FHitResult& HitResult);
+
+	bool GetPlayerViewPoint(FVector& ViewLocation, FRotator& ViewRotation) const;
+
+	AController* GetController() const;
+
+	FVector GetMuzzleWorldLocation() const;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Components")
 	USkeletalMeshComponent* WeaponMesh;
@@ -28,7 +51,24 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Components")
 	FName MuzzleSocketName = "MuzzleSocket";
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "WeaponData")
 	float TraceLength = 1000.0f;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "WeaponData")
+	float BulletSpread = 2.0f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "WeaponData")
+	float FireRate = 0.1f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "WeaponData")
+	FAmmoData AmmoData;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
+	FAmmoData CurrentAmmo;
+
+	AController* GetOwnerController() const;
+
+private:
+	FTimerHandle FireTimer;
+	
 };

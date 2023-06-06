@@ -7,6 +7,8 @@
 #include "BaseEnemy.generated.h"
 
 class USkeletalMeshComponent;
+class UFloatingPawnMovement;
+class UCapsuleComponent;
 
 UCLASS()
 class SHARKPOCALYPSE_API ABaseEnemy : public APawn
@@ -21,5 +23,11 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Components")
 	USkeletalMeshComponent* SkeletalMesh;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Components")
+	UFloatingPawnMovement* FloatingPawnMovement;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Components")
+	UCapsuleComponent* CapsuleComponent;
 
 };

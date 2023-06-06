@@ -46,13 +46,9 @@ protected:
 	int32 CurrentWeaponIndex;
 
 	UPROPERTY()
-	TArray<ABaseWeapon*> Weapons;
-
-	UPROPERTY()
 	ABaseWeapon* CurrentWeapon = nullptr;
 
 private:
-	void SpawnWeapon();
 	void AttachWeaponToSocket(FName& SocketName, USceneComponent* Scene, ABaseWeapon* Weapon);
 
 };

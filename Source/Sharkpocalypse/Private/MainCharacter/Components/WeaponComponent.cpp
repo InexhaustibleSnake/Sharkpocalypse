@@ -12,33 +12,26 @@ UWeaponComponent::UWeaponComponent()
 	CurrentWeaponIndex = 0;
 }
 
-
-
 void UWeaponComponent::BeginPlay()
 {
 	Super::BeginPlay();
-	
-	SpawnWeapon();
+
 	EquipWeapon(CurrentWeaponIndex);
 }
 
-void UWeaponComponent::SpawnWeapon()
+void UWeaponComponent::FireStart()
 {
-	const auto PlayerCharacter = Cast<ACharacter>(GetOwner());
+	CurrentWeapon->FireStart();
+}
 
-	auto SpawnedWeapon = GetWorld()->SpawnActor<ABaseWeapon>(WeaponData[CurrentWeaponIndex].WeaponClass);
-	if (!PlayerCharacter || !GetWorld()) return;
-
-	if (CurrentWeapon) CurrentWeapon->Destroy();
-
-	SpawnedWeapon->SetOwner(PlayerCharacter);
-
-	Weapons.Add(SpawnedWeapon);
+void UWeaponComponent::FireStop()
+{
+	CurrentWeapon->FireStop();
 }
 
 void UWeaponComponent::EquipWeapon(int32 Index)
 {
-	if (Index < 0 || Index >= Weapons.Num())
+	if (Index < 0 || Index >= WeaponData.Num())
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Red, "WARNING: Invalid weapon index");
 		return;
@@ -47,7 +40,10 @@ void UWeaponComponent::EquipWeapon(int32 Index)
 	const auto PlayerCharacter = Cast<ACharacter>(GetOwner());
 	if (!PlayerCharacter) return;
 
-	CurrentWeapon = Weapons[Index];
+	if (CurrentWeapon) CurrentWeapon->Destroy();
+
+	CurrentWeapon = GetWorld()->SpawnActor<ABaseWeapon>(WeaponData[CurrentWeaponIndex].WeaponClass);
+	CurrentWeapon->SetOwner(GetOwner());
 
 	AttachWeaponToSocket(WeaponAttachSocket, PlayerCharacter->GetMesh(), CurrentWeapon);
 }
@@ -63,16 +59,6 @@ void UWeaponComponent::AttachWeaponToSocket(FName& SocketName, USceneComponent* 
 
 void UWeaponComponent::IncrementWeaponIndex()
 {
-	CurrentWeaponIndex = (CurrentWeaponIndex + 1) % Weapons.Num();
+	CurrentWeaponIndex = (CurrentWeaponIndex + 1) % WeaponData.Num();
 	EquipWeapon(CurrentWeaponIndex);
-}
-
-void UWeaponComponent::FireStart()
-{
-	CurrentWeapon->FireStart();
-}
-
-void UWeaponComponent::FireStop()
-{
-	CurrentWeapon->FireStop();
 }

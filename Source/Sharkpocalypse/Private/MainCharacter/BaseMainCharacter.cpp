@@ -10,7 +10,10 @@ ABaseMainCharacter::ABaseMainCharacter()
 
 	MainCamera = CreateDefaultSubobject<UCameraComponent>("MainCamera");
 	MainCamera->SetupAttachment(GetRootComponent());
-	GetMesh()->SetupAttachment(MainCamera);
+	MainCamera->bUsePawnControlRotation = true;
+	
+	FAttachmentTransformRules AttachmentTransformRules(EAttachmentRule::SnapToTarget, false);
+	GetMesh()->AttachToComponent(MainCamera, AttachmentTransformRules);
 
 	WeaponComponent = CreateDefaultSubobject<UWeaponComponent>("WeaponComponent");
 }
@@ -31,6 +34,8 @@ void ABaseMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ABaseMainCharacter::Jump);
+	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ABaseMainCharacter::StopJumping);
+
 	PlayerInputComponent->BindAction("Shoot", IE_Pressed, WeaponComponent, &UWeaponComponent::FireStart);
 	PlayerInputComponent->BindAction("Shoot", IE_Released, WeaponComponent, &UWeaponComponent::FireStop);
 
