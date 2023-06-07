@@ -19,11 +19,16 @@ void UBaseHealthComponent::BeginPlay()
 
 void UBaseHealthComponent::SetHealth(float Value) 
 {
-	Health = FMath::Clamp(Health - Value, 0.0f, MaxHealth);
+	Health = FMath::Clamp(Value, 0.0f, MaxHealth);
+	OnHealthChanged.Broadcast(Health);
 }
 
 void UBaseHealthComponent::OnTakeAnyDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, "Damaged");
 	SetHealth(Health - Damage);
+
+	if (FMath::IsNearlyZero(Health))
+	{
+		GetOwner()->Destroy();
+	}
 }

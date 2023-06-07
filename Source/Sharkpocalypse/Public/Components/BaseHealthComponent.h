@@ -6,6 +6,8 @@
 #include "Components/ActorComponent.h"
 #include "BaseHealthComponent.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnHealthChanged, float, NewHealth);
+
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class SHARKPOCALYPSE_API UBaseHealthComponent : public UActorComponent
 {
@@ -13,6 +15,11 @@ class SHARKPOCALYPSE_API UBaseHealthComponent : public UActorComponent
 
 public:	
 	UBaseHealthComponent();
+
+	float GetHealthPercent() const { return Health / MaxHealth; }
+
+	UPROPERTY(BlueprintAssignable)
+	FOnHealthChanged OnHealthChanged;
 
 protected:
 	virtual void BeginPlay() override;
@@ -25,7 +32,6 @@ protected:
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Health")
 	float MaxHealth = 100.0f;
 
-	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Health")
 	float Health;
 
 };

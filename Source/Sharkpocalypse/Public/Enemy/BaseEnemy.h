@@ -10,6 +10,7 @@ class USkeletalMeshComponent;
 class UFloatingPawnMovement;
 class UCapsuleComponent;
 class UEnemyHealthComponent;
+class UWidgetComponent;
 
 UCLASS()
 class SHARKPOCALYPSE_API ABaseEnemy : public APawn
@@ -21,6 +22,9 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
+
+	UFUNCTION()
+	void OnHealthChanged(float NewHealth);
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Components")
 	USkeletalMeshComponent* SkeletalMesh;
@@ -36,5 +40,8 @@ protected:
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Components")
 	UEnemyHealthComponent* EnemyHealthComponent;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Components")
+	UWidgetComponent* HealthBarWidgetComponent;
 
 };

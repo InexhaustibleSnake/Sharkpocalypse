@@ -4,6 +4,8 @@
 #include "GameFramework/FloatingPawnMovement.h"
 #include "Components/CapsuleComponent.h"
 #include "Enemy/Components/EnemyHealthComponent.h"
+#include "Components/WidgetComponent.h"
+#include "UI/EnemyHealthBarWidget.h"
 
 ABaseEnemy::ABaseEnemy()
 {
@@ -18,6 +20,10 @@ ABaseEnemy::ABaseEnemy()
 	BodyCollision = CreateDefaultSubobject<UCapsuleComponent>("BodyCollision");
 	BodyCollision->SetupAttachment(SkeletalMesh);
 
+	HealthBarWidgetComponent = CreateDefaultSubobject<UWidgetComponent>("HealthBarWidgetComponent");
+	HealthBarWidgetComponent->SetupAttachment(GetRootComponent());
+	HealthBarWidgetComponent->SetWidgetSpace(EWidgetSpace::Screen);
+
 	FloatingPawnMovement = CreateDefaultSubobject<UFloatingPawnMovement>("FloatingPawnMovement");
 	EnemyHealthComponent = CreateDefaultSubobject<UEnemyHealthComponent>("EnemyHealthComponent");
 }
@@ -26,4 +32,14 @@ void ABaseEnemy::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	EnemyHealthComponent->OnHealthChanged.AddDynamic(this, &ABaseEnemy::OnHealthChanged);
+}
+
+void ABaseEnemy::OnHealthChanged(float NewHealth)
+{
+	const auto HealthBarWidget = Cast<UEnemyHealthBarWidget>(HealthBarWidgetComponent->GetUserWidgetObject());
+	if (!HealthBarWidget) return;
+
+	HealthBarWidget->SetHealthBarPercent(EnemyHealthComponent->GetHealthPercent());
+
 }
