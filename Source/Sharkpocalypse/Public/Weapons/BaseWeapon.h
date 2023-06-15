@@ -6,6 +6,8 @@
 #include "GameFramework/Actor.h"
 #include "BaseWeapon.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAmmoChange, int32, NewAmmo);
+
 USTRUCT(BlueprintType)
 struct FAmmoData
 {
@@ -29,6 +31,17 @@ public:
 	virtual void FireStart();
 	void FireStop();
 
+	virtual void SetAmmo(float Amount);
+
+	UPROPERTY(BlueprintCallable)
+	FOnAmmoChange OnAmmoChange;
+
+	bool IsAmmoEmpty() const { return !DefaultAmmo.InfiniteAmmo && CurrentAmmo.Bullets == 0; }
+	bool IsAmmoFull() const { return CurrentAmmo.Bullets == DefaultAmmo.Bullets; }
+
+	UFUNCTION(BlueprintCallable)
+	FAmmoData GetAmmoData() const { return CurrentAmmo; }
+
 protected:
 	virtual void BeginPlay() override;
 	bool GetTraceData(FVector& TraceStart, FVector& TraceEnd) const;
@@ -44,6 +57,8 @@ protected:
 	AController* GetController() const;
 
 	FVector GetMuzzleWorldLocation() const;
+
+	void PlayCameraShake();
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Components")
 	USkeletalMeshComponent* WeaponMesh;
@@ -61,14 +76,17 @@ protected:
 	float FireRate = 0.1f;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "WeaponData")
-	FAmmoData AmmoData;
+	float Damage = 10.0f;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "WeaponData")
+	TSubclassOf<UCameraShakeBase> CameraShake;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "WeaponData")
+	FAmmoData DefaultAmmo;
+
 	FAmmoData CurrentAmmo;
-
-	AController* GetOwnerController() const;
 
 private:
 	FTimerHandle FireTimer;
-	
+
 };

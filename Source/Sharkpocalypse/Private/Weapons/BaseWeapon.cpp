@@ -17,6 +17,8 @@ void ABaseWeapon::BeginPlay()
 	Super::BeginPlay();
 }
 
+void ABaseWeapon::MakeShot() {}
+
 void ABaseWeapon::FireStart()
 {
 	GetWorld()->GetTimerManager().SetTimer(FireTimer, this, &ABaseWeapon::MakeShot, FireRate, true);
@@ -25,6 +27,13 @@ void ABaseWeapon::FireStart()
 void ABaseWeapon::FireStop()
 {
 	GetWorld()->GetTimerManager().ClearTimer(FireTimer);
+}
+
+void ABaseWeapon::SetAmmo(float Amount)
+{
+	CurrentAmmo.Bullets = FMath::Clamp(Amount, 0, DefaultAmmo.Bullets);
+
+	OnAmmoChange.Broadcast(CurrentAmmo.Bullets);
 }
 
 bool ABaseWeapon::GetTraceData(FVector& TraceStart, FVector& TraceEnd) const
@@ -47,7 +56,7 @@ void ABaseWeapon::MakeDamage(const FHitResult& HitResult)
 
 	FPointDamageEvent PointDamageEvent;
 	PointDamageEvent.HitInfo = HitResult;
-	Actor->TakeDamage(3, PointDamageEvent, GetOwnerController(), this);
+	Actor->TakeDamage(Damage, PointDamageEvent, GetController(), this);
 }
 
 void ABaseWeapon::MakeTrace(FHitResult& HitResult, const FVector& TraceStart, const FVector& TraceEnd)
@@ -79,10 +88,13 @@ AController* ABaseWeapon::GetController() const
 	return PlayerPawn ? PlayerPawn->GetController() : nullptr;
 }
 
-AController* ABaseWeapon::GetOwnerController() const
+void ABaseWeapon::PlayCameraShake()
 {
-	const auto PawnOwner = Cast<APawn>(GetOwner());
-	return PawnOwner ? PawnOwner->GetController() : nullptr;
-}
+	const auto PlayerPawn = Cast<APawn>(GetOwner());
+	if (!PlayerPawn) return;
 
-void ABaseWeapon::MakeShot() {}
+	const auto PlayerController = Cast<APlayerController>(PlayerPawn->GetController());
+	if (!PlayerController || !PlayerController->PlayerCameraManager) return;
+
+	PlayerController->PlayerCameraManager->StartCameraShake(CameraShake);
+}

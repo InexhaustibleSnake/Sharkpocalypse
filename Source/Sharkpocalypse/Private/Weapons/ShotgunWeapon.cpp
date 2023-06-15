@@ -4,6 +4,22 @@
 
 void AShotgunWeapon::MakeShot()
 {
+	Super::MakeShot();
+
+	if (IsAmmoEmpty())
+	{
+		FireStop();
+
+		return;
+	}
+
+	PlayCameraShake();
+
+	if (!DefaultAmmo.InfiniteAmmo)
+	{
+		SetAmmo(--CurrentAmmo.Bullets);
+	}
+
 	FVector TraceStart, TraceEnd;
 
 	FHitResult HitResult;

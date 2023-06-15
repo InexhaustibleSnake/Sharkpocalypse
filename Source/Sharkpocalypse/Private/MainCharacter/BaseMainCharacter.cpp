@@ -3,8 +3,10 @@
 #include "MainCharacter/BaseMainCharacter.h"
 #include "Camera/CameraComponent.h"
 #include "MainCharacter/Components/WeaponComponent.h"
+#include "MainCharacter/Components/PlayerMovementComponent.h"
 
-ABaseMainCharacter::ABaseMainCharacter()
+ABaseMainCharacter::ABaseMainCharacter(const FObjectInitializer& ObjInit)
+	: Super(ObjInit.SetDefaultSubobjectClass<UPlayerMovementComponent>(ACharacter::CharacterMovementComponentName))
 {
 	PrimaryActorTick.bCanEverTick = true;
 
@@ -13,9 +15,10 @@ ABaseMainCharacter::ABaseMainCharacter()
 	MainCamera->bUsePawnControlRotation = true;
 
 	FAttachmentTransformRules AttachmentTransformRules(EAttachmentRule::SnapToTarget, false);
-	GetMesh()->AttachToComponent(MainCamera, AttachmentTransformRules);
+	GetMesh()->SetupAttachment(MainCamera);
 
 	WeaponComponent = CreateDefaultSubobject<UWeaponComponent>("WeaponComponent");
+	PlayerMovementComponent = Cast<UPlayerMovementComponent>(GetMovementComponent());
 }
 
 void ABaseMainCharacter::BeginPlay()
@@ -40,6 +43,10 @@ void ABaseMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 	PlayerInputComponent->BindAction("Shoot", IE_Released, WeaponComponent, &UWeaponComponent::FireStop);
 
 	PlayerInputComponent->BindAction("NextWeapon", IE_Released, WeaponComponent, &UWeaponComponent::IncrementWeaponIndex);
+
+	DECLARE_DELEGATE_OneParam(FSprinting, bool);
+	PlayerInputComponent->BindAction<FSprinting>("Sprint", IE_Pressed, PlayerMovementComponent, &UPlayerMovementComponent::ChangeMovementSpeed, true);
+	PlayerInputComponent->BindAction<FSprinting>("Sprint", IE_Released, PlayerMovementComponent, &UPlayerMovementComponent::ChangeMovementSpeed, false);
 
 	PlayerInputComponent->BindAxis("MoveForward", this, &ABaseMainCharacter::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &ABaseMainCharacter::MoveRight);

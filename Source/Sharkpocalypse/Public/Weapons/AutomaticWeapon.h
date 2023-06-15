@@ -14,7 +14,4 @@ class SHARKPOCALYPSE_API AAutomaticWeapon : public ABaseWeapon
 protected:
 	virtual void MakeShot() override;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "WeaponData")
-	float Damage = 10.0f;
-
 };

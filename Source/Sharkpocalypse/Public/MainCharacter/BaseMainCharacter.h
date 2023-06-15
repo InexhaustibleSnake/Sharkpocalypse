@@ -8,6 +8,7 @@
 
 class UCameraComponent;
 class UWeaponComponent;
+class UPlayerMovementComponent;
 
 UCLASS()
 class SHARKPOCALYPSE_API ABaseMainCharacter : public ACharacter
@@ -15,7 +16,7 @@ class SHARKPOCALYPSE_API ABaseMainCharacter : public ACharacter
 	GENERATED_BODY()
 
 public:
-	ABaseMainCharacter();
+	ABaseMainCharacter(const FObjectInitializer& ObjInit);
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
@@ -27,6 +28,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Components")
 	UWeaponComponent* WeaponComponent;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Components")
+	UPlayerMovementComponent* PlayerMovementComponent;
 
 	void MoveForward(float Amount);
 	void MoveRight(float Amount);
