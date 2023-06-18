@@ -17,6 +17,9 @@ struct FAmmoData
 	int32 Bullets;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
+	int32 MaxBullets;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
 	bool InfiniteAmmo;
 };
 

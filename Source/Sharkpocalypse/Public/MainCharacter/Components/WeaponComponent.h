@@ -19,6 +19,16 @@ struct FWeaponData
 
 };
 
+USTRUCT(BlueprintType)
+struct FWeaponsAmmoData
+{
+	GENERATED_USTRUCT_BODY()
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
+	
+
+};
+
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class SHARKPOCALYPSE_API UWeaponComponent : public UActorComponent
 {
@@ -31,6 +41,11 @@ public:
 	void FireStop();
 
 	void IncrementWeaponIndex();
+
+	UFUNCTION(BlueprintCallable)
+	bool TryGetCurrentWeaponAmmoData(FAmmoData& AmmoData) const;
+
+	void AddWeaponToInventory(FWeaponData& WeaponToAdd);
 
 protected:
 	virtual void BeginPlay() override;

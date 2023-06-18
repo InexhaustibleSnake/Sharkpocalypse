@@ -15,6 +15,8 @@ ABaseWeapon::ABaseWeapon()
 void ABaseWeapon::BeginPlay()
 {
 	Super::BeginPlay();
+
+	CurrentAmmo = DefaultAmmo;
 }
 
 void ABaseWeapon::MakeShot() {}

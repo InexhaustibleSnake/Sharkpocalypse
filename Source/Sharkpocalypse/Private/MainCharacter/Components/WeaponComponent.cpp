@@ -62,3 +62,21 @@ void UWeaponComponent::IncrementWeaponIndex()
 	CurrentWeaponIndex = (CurrentWeaponIndex + 1) % WeaponData.Num();
 	EquipWeapon(CurrentWeaponIndex);
 }
+
+bool UWeaponComponent::TryGetCurrentWeaponAmmoData(FAmmoData& AmmoData) const
+{
+	if (CurrentWeapon)
+	{
+		AmmoData = CurrentWeapon->GetAmmoData();
+		return true;
+	}
+
+	return false;
+}
+
+void UWeaponComponent::AddWeaponToInventory(FWeaponData& WeaponToAdd)
+{
+	if (!WeaponToAdd.WeaponClass && WeaponData.Contains(WeaponToAdd)) return;
+
+	WeaponData.Add(WeaponToAdd);
+}
